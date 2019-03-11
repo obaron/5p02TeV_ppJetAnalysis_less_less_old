@@ -138,8 +138,8 @@ int printPlots_jetPlots(const std::string input_ppData_condorDir , const std::st
  
     getEventCounts( (TFile*)finMC,   false);
 
-    printJetCountReport( (TFile*)finData,true);
-    printJetCountReport( (TFile*)finMC,false);
+    //printJetCountReport( (TFile*)finData,true);
+    //printJetCountReport( (TFile*)finMC,false);
     //assert(false);
   }
   else {

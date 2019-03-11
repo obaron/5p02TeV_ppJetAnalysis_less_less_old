@@ -87,9 +87,9 @@
 
 // -----------------------------------------------------------------------------------------------------------------------
 const std::string CMSSW_BASE=
-  "/home/ilaflott/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/readForests/outputCondor/";
+  "/home/obaron/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/readForests/outputCondor/";
 const std::string SCRATCH_BASE=
-  "/cms/heavyion/ilaflott/T2_US_MIT_SCRATCH/5p02TeV_ppJetAnalysis/readForests/";
+  "/home/obaron/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/readForests/";
 const std::string unfoldDataSpectra_outdir="output/unfoldDataSpectra/";
 const std::string unfoldMCSpectra_outdir="output/unfoldMCSpectra/";
 

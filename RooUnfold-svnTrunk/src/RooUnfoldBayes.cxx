@@ -145,33 +145,27 @@ TMatrixD& RooUnfoldBayes::H2M (const TH2* h, TMatrixD& m, Bool_t overflow)
 //-------------------------------------------------------------------------
 void RooUnfoldBayes::setup()
 {
-  _nc = _nt; //nc--> int, num cause bins,  nt--> int, num truth bins
-  _ne = _nm; //ne--> int, num effect bins, nm--> int, num measured bins
+  _nc = _nt;
+  _ne = _nm;
 
-  _nEstj.ResizeTo(_ne); //nEst--> tvector d, number of meas. evts from effect ej
+  _nEstj.ResizeTo(_ne);
   _nEstj= Vmeasured();
 
-  _nCi.ResizeTo(_nt); //nCi--> tvector d, number of true events from cause ci
+  _nCi.ResizeTo(_nt);
   _nCi= _res->Vtruth();
 
-  _Nji.ResizeTo(_ne,_nt); //Nji-> tmatrixd, mapping of true events to measured events, response matrics?
-
-  // this H2M function is a roounfoldresponse function returning a response matrix with some normalization scheme i don't fully understand?
+  _Nji.ResizeTo(_ne,_nt);
   H2M (_res->Hresponse(), _Nji, _overflow);   // don't normalise, which is what _res->Mresponse() would give us
 
-  
   if (_res->FakeEntries()) {
-    cout<<"_response has fakeEntries"<<endl;
-    cout<<"putting fakes into extra bin!!!"<<endl;
-    //TH1D* hfakes=_res->HFakes();
     TVectorD fakes= _res->Vfakes();
     Double_t nfakes= fakes.Sum();
     if (verbose()>=0) cout << "Add truth bin for " << nfakes << " fakes" << endl;
-    _nc++; //increment # of true event bins
-    _nCi.ResizeTo(_nc); //resize tvector d representing # of true events form cause ci
-    _nCi[_nc-1]= nfakes; //set extra bin value to @ # of fakes
-    _Nji.ResizeTo(_ne,_nc); //resize response matrix too
-    for (Int_t i= 0; i<_nm; i++) _Nji(i,_nc-1)= fakes[i]; //entire row of fake bins
+    _nc++;
+    _nCi.ResizeTo(_nc);
+    _nCi[_nc-1]= nfakes;
+    _Nji.ResizeTo(_ne,_nc);
+    for (Int_t i= 0; i<_nm; i++) _Nji(i,_nc-1)= fakes[i];
   }
 
   _nbarCi.ResizeTo(_nc);
@@ -198,7 +192,7 @@ void RooUnfoldBayes::unfold()
   // Calculate the unfolding matrix.
   // _niter = number of iterations to perform (3 by default).
   // _smoothit = smooth the matrix in between iterations (default false).
-  
+
   TMatrixD PEjCi(_ne,_nc), PEjCiEff(_ne,_nc);
   for (Int_t i = 0 ; i < _nc ; i++) {
     if (_nCi[i] <= 0.0) { _efficiencyCi[i] = 0.0; continue; }
@@ -212,11 +206,11 @@ void RooUnfoldBayes::unfold()
     Double_t effinv = eff > 0.0 ? 1.0/eff : 0.0;   // reset PEjCiEff if eff=0
     for (Int_t j = 0 ; j < _ne ; j++) PEjCiEff(j,i) *= effinv;
   }
-  
+
   TVectorD PbarCi(_nc);
 
   for (Int_t kiter = 0 ; kiter < _niter; kiter++) {
-    
+
     if (verbose()>=1) cout << "Iteration : " << kiter << endl;
 
     // update prior from previous iteration

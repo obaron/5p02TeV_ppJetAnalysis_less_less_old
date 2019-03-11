@@ -1,6 +1,6 @@
 //=====================================================================-*-C++-*-
 // File and Version Information:
-//      $Id: RooUnfold.cxx 344 2013-07-29 22:48:37Z T.J.Adye $
+//      $Id: RooUnfold.cxx 355 2017-07-18 15:43:03Z T.J.Adye@rl.ac.uk $
 //
 // Description:
 //      Unfolding framework base class.
@@ -35,6 +35,16 @@
 <li>True and measured distributions must have the same binning
 <li>Can account for both smearing and biasing
 <li>Returns near singular covariance matrices, again leading to very large chi squared values
+</ul>
+<li> RooUnfoldIds: Uses the Bayes method of unfolding based on the method written by Malaescu (<a href="http://arxiv.org/abs/1106.3107">CERN-PH-EP-2011-111</a>)
+<ul>
+<li>Set the number of iterations used to improve the folding matrix
+<li>Regularisation parameters define the level at which values are deemed to be due to statistical fluctuations. Used for modifying the folding matrix, as well as unfolding.
+<li>Returns errors as a full matrix of covariances
+<li>Error processing is much the same as with the kCovToy setting with 1000 toys. This is quite slow but can be switched off.
+<li>Can handle 2 dimensional distributions
+<li>True and measured distributions must have the same binning
+<li>Can account for both smearing and biasing
 </ul>
 <li> RooUnfoldBinByBin: Unfolds using the method of correction factors.
 <ul>
@@ -73,6 +83,7 @@ END_HTML */
 #include "TClass.h"
 #include "TMatrixD.h"
 #include "TNamed.h"
+#include "TBuffer.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TH3.h"
@@ -95,6 +106,7 @@ END_HTML */
 #ifdef HAVE_DAGOSTINI
 #include "RooUnfoldDagostini.h"
 #endif
+#include "RooUnfoldIds.h"
 
 using std::vector;
 using std::cout;
@@ -110,7 +122,6 @@ ClassImp (RooUnfold);
 RooUnfold::RooUnfold (const RooUnfoldResponse* res, const TH1* meas, const char* name, const char* title)
   : TNamed (name, title)
 {
-  cout<<"in ROOUNFOLD's RooUnfold.cxx, special base RooUnfold constructor accessed by constructiors of unfolding classes"<<endl;
   // Constructor with response matrix object and measured unfolding input histogram.
   // Should not normally be used directly - instead, create an instance of one of RooUnfold's subclasses,
   // or use the New() static constructor.
@@ -122,12 +133,13 @@ RooUnfold* RooUnfold::New (Algorithm alg, const RooUnfoldResponse* res, const TH
                            const char* name, const char* title)
 {
     /*Unfolds according to the value of the alg enum:
-    0: a dummy unfold
-    1: Unfold via a Bayes method
-    2: Unfold using singlar value decomposition
-    3: Unfold bin by bin.
-    4: Unfold with TUnfold
-    5: Unfold using inversion of response matrix
+    0 = kNone:     dummy unfolding
+    1 = kBayes:    Unfold via iterative application of Bayes theorem
+    2 = kSVD:      Unfold using singlar value decomposition (SVD)
+    3 = kBinByBin: Unfold bin by bin.
+    4 = kTUnfold:  Unfold with TUnfold
+    5 = kInvert:   Unfold using inversion of response matrix
+    7 = kIDS:      Unfold using iterative dynamically stabilized (IDS) method
     */
   RooUnfold* unfold;
   switch (alg) {
@@ -162,6 +174,9 @@ RooUnfold* RooUnfold::New (Algorithm alg, const RooUnfoldResponse* res, const TH
       cerr << "RooUnfoldDagostini is not available" << endl;
       return 0;
 #endif
+    case kIDS:
+      unfold= new RooUnfoldIds      (res, meas);
+      break;
     default:
       cerr << "Unknown RooUnfold method " << Int_t(alg) << endl;
       return 0;
@@ -331,10 +346,6 @@ void RooUnfold::SetResponse (RooUnfoldResponse* res, Bool_t takeOwnership)
 
 void RooUnfold::Unfold()
 {
-  cout<<endl;
-  cout<<"IN ROOUNFOLD'S RooUnfold.cxx, Unfold( )"<<endl;
-  cout<<"RooUnfold.cxx, UnfoldWithErrors() called me!!"<<endl;
-  cout<<"WARNING NOT ACTUALLY UNFOLDING I SHOULDNT BE HERE"<<endl;
   // Dummy unfolding - just copies input
   cout << "********************** " << ClassName() << ": dummy unfolding - just copy input **********************" << endl;
   _rec.ResizeTo (_nt);
@@ -407,9 +418,6 @@ void RooUnfold::GetErrMat()
 
 Bool_t RooUnfold::UnfoldWithErrors (ErrorTreatment withError, bool getWeights)
 {
-    cout<<endl;
-  cout<<"IN ROOUNFOLD'S RooUnfold.cxx, UnfoldWithErrors( ErrorTreatment , bool)"<<endl;
-  cout<<"RooUnfold.cxx, Hreco() called me!!"<<endl;
   if (!_unfolded) {
     if (_fail) return false;
     const TH1* rmeas= _res->Hmeasured();
@@ -425,9 +433,6 @@ Bool_t RooUnfold::UnfoldWithErrors (ErrorTreatment withError, bool getWeights)
       if (rmeas->GetDimension()>=3) cerr << "x" << rmeas->GetNbinsZ();
       cerr << "-bin measured histogram from RooUnfoldResponse" << endl;
     }
-    cout<<endl;
-    cout<<"IN ROOUNFOLD'S RooUnfold.cxx, UnfoldWithErrors( ErrorTreatment , bool)"<<endl;
-    cout<<"Calling Unfold()"<<endl;
     Unfold();
     if (!_unfolded) {
       _fail= true;
@@ -672,34 +677,17 @@ void RooUnfold::SetNameTitleDefault()
 
 TH1* RooUnfold::Hreco (ErrorTreatment withError)
 {
-  cout<<"IN ROOUNFOLD'S RooUnfold.cxx, Hreco( ErrorTreatment )"<<endl;
-  cout<<"SVDUnfoldDataSpectra.C calls me directly!"<<endl;
-  cout<<endl;
-    
     /*Creates reconstructed distribution. Error calculation varies by withError:
     0: No errors
     1: Errors from the square root of the diagonals of the covariance matrix given by the unfolding
     2: Errors from the square root of of the covariance matrix given by the unfolding
     3: Errors from the square root of the covariance matrix from the variation of the results in toy MC tests
     */
-
-
   TH1* reco= (TH1*) _res->Htruth()->Clone(GetName());
-
-
   reco->Reset();
-
-
   reco->SetTitle (GetTitle());
-  
-  
-  cout<<endl;
-  cout<<"IN ROOUNFOLD'S RooUnfold.cxx, Hreco( ErrorTreatment )"<<endl;
-  cout<<"CALLING UnfoldWithErrors()"<<endl;
   if (!UnfoldWithErrors (withError)) withError= kNoError;
-
   if (!_unfolded) return reco;
-
 
   for (Int_t i= 0; i < _nt; i++) {
     Int_t j= RooUnfoldResponse::GetBin (reco, i, _overflow);
@@ -712,6 +700,7 @@ TH1* RooUnfold::Hreco (ErrorTreatment withError)
       reco->SetBinError (j, sqrt (fabs (_err_mat(i,i))));
     }
   }
+
   return reco;
 }
 

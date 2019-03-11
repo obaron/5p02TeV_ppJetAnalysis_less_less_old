@@ -43,7 +43,7 @@ int SVDUnfoldMCSpectra( std::string inFile_MC_dir , const std::string baseName  
 
   
   // INFILE NAME(S) -----------
-  const std::string inFile_MC_name="/Py8_CUETP8M1_QCDjetAllPtBins_"+fullJetType+"-allFiles.root";
+  const std::string inFile_MC_name="/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_"+fullJetType+"-allFiles.root";
   //const std::string inFile_Data_name="/HighPtJetTrig_"+fullJetType+"-allFiles.root";
 
   // ppMC input file -------------------------

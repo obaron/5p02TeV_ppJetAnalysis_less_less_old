@@ -1,6 +1,6 @@
 //=====================================================================-*-C++-*-
 // File and Version Information:
-//      $Id: RooUnfold.h 338 2012-07-06 17:56:11Z T.J.Adye $
+//      $Id: RooUnfold.h 354 2017-07-11 17:49:50Z T.J.Adye@rl.ac.uk $
 //
 // Description:
 //      Unfolding framework base class.
@@ -31,7 +31,8 @@ public:
     kBinByBin,           //   RooUnfoldBinByBin
     kTUnfold,            //   RooUnfoldTUnfold
     kInvert,             //   RooUnfoldInvert
-    kDagostini           //   RooUnfoldDagostini
+    kDagostini,          //   RooUnfoldDagostini
+    kIDS                 //   RooUnfoldIds
   };
 
   enum ErrorTreatment {  // Error treatment:
@@ -170,7 +171,7 @@ protected:
 
 public:
 
-  ClassDef (RooUnfold, 2) // Unfolding base class: implementations in RooUnfoldBayes, RooUnfoldSvd, RooUnfoldBinByBin, RooUnfoldTUnfold, and RooUnfoldInvert
+  ClassDef (RooUnfold, 2) // Unfolding base class: implementations in RooUnfoldBayes, RooUnfoldSvd, RooUnfoldBinByBin, RooUnfoldTUnfold, RooUnfoldInvert, RooUnfoldIds
 };
 
 //==============================================================================

@@ -62,7 +62,7 @@ int bayesUnfoldMCSpectra(  std::string inFile_MC_dir , std::string baseName ,
   
   
   // INFILE NAME(S) -----------
-  const std::string inFile_MC_name="/Py8_CUETP8M1_QCDjetAllPtBins_"+fullJetType+"-allFiles.root";
+  const std::string inFile_MC_name="/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_"+fullJetType+"-allFiles.root";
   
   
   // OUTPUT FILE, NAME(S) -----------

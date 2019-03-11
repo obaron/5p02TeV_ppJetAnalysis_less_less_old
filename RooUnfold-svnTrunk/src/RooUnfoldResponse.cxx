@@ -1,6 +1,6 @@
 //=====================================================================-*-C++-*-
 // File and Version Information:
-//      $Id: RooUnfoldResponse.cxx 348 2014-08-08 22:18:23Z T.J.Adye@rl.ac.uk $
+//      $Id: RooUnfoldResponse.cxx 353 2017-02-10 15:04:26Z T.J.Adye@rl.ac.uk $
 //
 // Description:
 //      Response Matrix
@@ -29,6 +29,7 @@ END_HTML */
 
 #include "TClass.h"
 #include "TNamed.h"
+#include "TBuffer.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TH3.h"
@@ -341,7 +342,6 @@ RooUnfoldResponse::Setup (const TH1* measured, const TH1* truth)
 RooUnfoldResponse&
 RooUnfoldResponse::Setup (const TH1* measured, const TH1* truth, const TH2* response)
 {
-  bool funcDebug=false;
   // Set up from already-filled histograms.
   // "response" gives the response matrix, measured X truth.
   // "measured" and "truth" give the projections of "response" onto the X-axis and Y-axis respectively,
@@ -355,7 +355,6 @@ RooUnfoldResponse::Setup (const TH1* measured, const TH1* truth, const TH2* resp
   _res= (TH2*) response->Clone();
   if (measured) {
     _mes= (TH1*) measured->Clone();
-    cout<<"cloning _mes for _fak hist"<<endl<<endl;
     _fak= (TH1*) measured->Clone("fakes");
     _fak->Reset();
     _fak->SetTitle("Fakes");
@@ -386,185 +385,49 @@ RooUnfoldResponse::Setup (const TH1* measured, const TH1* truth, const TH2* resp
     cerr << "Warning: RooUnfoldResponse measured X truth is " << _nm << " X " << _nt
          << ", but matrix is " << _res->GetNbinsX()<< " X " << _res->GetNbinsY() << endl;
   }
-  
+
   Int_t first=1, nm= _nm, nt= _nt, s= _res->GetSumw2N();
-  bool _resErrsExist=(bool)s;
-  
   if (_overflow) {
-    cout<<"WARNING _overflow="<<_overflow<<endl;
-    first= 0;    nm += 2;    nt += 2;  }
-  
+    first= 0;
+    nm += 2;
+    nt += 2;
+  }
 
-
-
-  
-  
   if (!measured || _mes->GetEntries() == 0.0) {
-    
     // Similar to _res->ProjectionX() but without stupid reset of existing histograms
-    // Always include under/overflows in sum of truth.    
+    // Always include under/overflows in sum of truth.
     for (Int_t i= 0; i<nm; i++) {
-      Double_t nmes= 0.0, wmes= 0.0;      
-      for (Int_t j= 0; j<_nt+2; j++) {	
-	nmes +=      _res->GetBinContent (i, j);
-	if (_resErrsExist) 
-	  wmes += pow (_res->GetBinError   (i, j), 2);
-      }      
+      Double_t nmes= 0.0, wmes= 0.0;
+      for (Int_t j= 0; j<_nt+2; j++) {
+               nmes +=      _res->GetBinContent (i+first, j);
+        if (s) wmes += pow (_res->GetBinError   (i+first, j), 2);
+      }
       Int_t bin= GetBin (_mes, i, _overflow);
-      _mes->SetBinContent (bin,      nmes );      
-      if (_resErrsExist) 
-	_mes->SetBinError   (bin, sqrt(wmes));
+             _mes->SetBinContent (bin,      nmes );
+      if (s) _mes->SetBinError   (bin, sqrt(wmes));
     }
-  } 
-  else {
-    
-    
+  } else {
     // Fill fakes from the difference of _mes - _res->ProjectionX()
     // Always include under/overflows in sum of truth.
-    //cout<<"_mes hist exists, filling _fak with diff between _mes and _res->ProjectionX()"<<endl;
     Int_t sm= _mes->GetSumw2N(), nfake=0;
-    bool _mesErrsExist=(bool)sm;
-    
-    
-    
-    //for (Int_t i= 0; i<nm; i++) {
-    for (Int_t i= first; i<=nm; i++) {
+    for (Int_t i= 0; i<nm; i++) {
       Double_t nmes= 0.0, wmes= 0.0;
-      
-      
-      float _res_xbin_low=_res->GetXaxis()->GetBinLowEdge(i);
-      float _res_xbin_hi =(_res->GetXaxis()->GetBinLowEdge(i)) + (_res->GetXaxis()->GetBinWidth(i));
-      
-      if(funcDebug)cout<<"--- X-AXIS --- bin (i)="<<(i)<<endl;
-      if(funcDebug)cout<<"--- X-AXIS --- pt range from "<<_res_xbin_low << " GeV to " << _res_xbin_hi << " GeV" << endl;      
-      if(funcDebug)cout<<endl;
-
-      
-
-      //for (Int_t j= 0; j<_nt+2; j++) {	
-      for (Int_t j= first; j<=nt; j++) {	
-	
-	
-	
-	if( (i==0 || j==0) && (_res->GetBinContent (i, j)>0.) )
-	  cout<<"WARNING underflow, _res->GetBinContent (i, 0)="<<_res->GetBinContent (i, 0)<<endl;
-	if( ( i==(nm+1) || j==(nt+1) ) && (_res->GetBinContent (i, j)>0.) )
-	  cout<<"WARNING overflow, _res->GetBinContent (i, "<<_nt+1<<")="<<_res->GetBinContent (i, _nt+1)<<endl;
-	
-	
-	
-	float _res_ybin_low=_res->GetYaxis()->GetBinLowEdge(j);
-	float _res_ybin_hi =(_res->GetYaxis()->GetBinLowEdge(j)) + (_res->GetYaxis()->GetBinWidth(j));
-	if(funcDebug)cout<<"--- Y-AXIS --- y-axis bin (j)="<<(j)<<endl;
-	if(funcDebug)cout<<"--- Y-AXIS --- pt range from "<<_res_ybin_low << " GeV to " << _res_ybin_hi << " GeV" << endl;
-	if(funcDebug)cout<<"--- Y-AXIS --- _res->GetBinContent("<<i<<","<<j<<")="<<_res->GetBinContent(i,j)<<" +/- "<< _res->GetBinError(i,j) << endl;
-	
-	
-	
-	nmes +=      _res->GetBinContent (i, j);	
-	if (_resErrsExist) 
-	  wmes += pow (_res->GetBinError   (i, j), 2);  //ERROR ON PROJECTION
-	
-      }//end loop over j
-      
-      if(funcDebug)cout<<"currently: nmes = "<<nmes<< " +/- "<< wmes << endl;
-      
-      
-      //Int_t bin= GetBin (_mes, i, _overflow);
-      
-      Int_t bin=i;      
-      if(funcDebug)cout<<endl<<"pt range from "<< (_mes->GetBinLowEdge(bin)) << " GeV to " << (_mes->GetBinLowEdge(bin) + _mes->GetBinWidth(bin)) << " GeV" << endl;
-      if(funcDebug)cout<<"_meas->GetBinContent("<<bin<<")="<<_mes->GetBinContent (bin)<<endl<<endl;
-      
+      for (Int_t j= 0; j<_nt+2; j++) {
+               nmes +=      _res->GetBinContent (i+first, j);
+        if (s) wmes += pow (_res->GetBinError   (i+first, j), 2);
+      }
+      Int_t bin= GetBin (_mes, i, _overflow);
       Double_t fake= _mes->GetBinContent (bin) - nmes;
-      
-      if (!_resErrsExist)//use poisson counting error 
-	wmes= nmes;
-      
-      if (fake>0.) 
-	nfake++;
-      
-      if(fake<0.){
-	//cout.precision(100);
-
-	if(funcDebug)cout<<endl<<"WARNING negative fake hist content, check fake calculation!!!"<<endl;
-	if(funcDebug)cout<<" _meas->GetBinContent("<<bin<<") = "<<_mes->GetBinContent (bin)<<endl;	
-	if(funcDebug)cout<<"                    nmes = "<< nmes << endl;
-	if(funcDebug)cout<<"                    fake = "<< fake <<endl;	
-	if(funcDebug)cout<<endl<<"WARNING setting bin content to zero!!!"<<endl;
-	
-	_fak->SetBinContent (bin, 0.);                        
-	
-      }
-      else{
-	_fak->SetBinContent (bin, fake);                        
-      }
-      
-      if(funcDebug)cout<< "final: _fak->GetBinContent("<<bin<<") = " <<_fak->GetBinContent(bin)<<endl;
-      
-      
-      
-      
-      
-      //if the fake distribution is being created by the MC response, why must bin error be inflated in this manner?
-      //one could in theory simply loop over the bins of the response matrix pre-rebinning, then use the weighted errors there
-      //this error calculation works only if the errors between the measured histo and the response projection are uncorrelated.      
-      
-      
-      //// ORIG LINE OF CODE
-      //_fak->SetBinError   (bin, sqrt ( wmes + ( _mesErrsExist ? pow(_mes->GetBinError(bin),2) : _mes->GetBinContent(bin) ) ) );
-      
-      
-      //// EQUIV TO ORIG BUT CLEARER (NO TERNARY [?] OPERATOR)
-      //if(_mesErrsExist){	
-      //	_fak->SetBinError   (bin, sqrt ( wmes + ( _mes->GetBinError(bin)*_mes->GetBinError(bin) ) ) ); } //sum errs in quad
-      //else{
-      //	_fak->SetBinError   (bin, sqrt ( wmes + ( _mes->GetBinContent(bin) ) ) ); } //assume poisson errors in _mes if no sumw2 structure
-      
-      // MY ERROR CALCULATION CORRESPONDING TO THE FACT THAT THE PROJECTION + MEASURED SPECTRA COME FROM SAME TH2
-      if(_mesErrsExist){
-	Double_t _mesErr=_mes->GetBinError(bin)*_mes->GetBinError(bin);
-	Double_t _projErr=wmes;
-	Double_t _newErr=_mesErr-_projErr;
-      	
-	if(_newErr<0. || (fake<0.) ){
-	  if(_newErr<0.)
-	    cout<<endl<<"WARNING _newErr is negative!!!!"<<endl;
-	  else if(fake<0.)
-	    cout<<endl<<"WARNING fake was negative!!!! check this calculation!"<<endl;
-	  if(funcDebug)cout<<"sqrt(fabs( _mesErr))= "<< sqrt(fabs(_mesErr )) <<endl;
-	  if(funcDebug)cout<<"sqrt(fabs(_projErr))= "<< sqrt(fabs(_projErr)) <<endl;
-	  if(funcDebug)cout<<"sqrt(fabs( _newErr))= "<< sqrt(fabs(_newErr )) <<endl<<endl;	  
-	  
-	  if(fake>0.){
-	    if(funcDebug)cout<<"WARNING setting bin error to content!!!"<<endl;
-	    _fak->SetBinError   (bin, _fak->GetBinContent(bin) );	  }
-	  else{
-	    if(funcDebug)cout<<"WARNING setting bin error to zero!!!"<<endl;
-	    _fak->SetBinError   (bin, 0. );	  }
-	}
-	else
-	  _fak->SetBinError   (bin, sqrt ( fabs( _newErr ) ) ); 
-	
-	
-      } //sum errs in quad
-      else{
-      	_fak->SetBinError   (bin, sqrt ( wmes + ( _mes->GetBinContent(bin) ) ) ); 
-      } //assume poisson errors in _mes if no sumw2 structure
-      
-      cout<< "final: _fak->GetBinError("<<bin<<") = " <<_fak->GetBinError(bin)<<endl<<endl;
-      
-      
-      
-      
-    }//end loop over i
-
+      if (fake!=0.0) nfake++;
+      if (!s) wmes= nmes;
+      _fak->SetBinContent (bin, fake);
+      _fak->SetBinError   (bin, sqrt (wmes + (sm ? pow(_mes->GetBinError(bin),2) : _mes->GetBinContent(bin))));
+    }
 #if ROOT_VERSION_CODE >= ROOT_VERSION(5,13,0)
     _fak->SetEntries (_fak->GetEffectiveEntries());  // 0 entries if 0 fakes
 #else
     _fak->SetEntries (nfake);  // 0 entries if 0 fakes
 #endif
-
   }
 
   if (!truth || _tru->GetEntries() == 0.0) {
@@ -573,11 +436,11 @@ RooUnfoldResponse::Setup (const TH1* measured, const TH1* truth, const TH2* resp
     for (Int_t j= 0; j<nt; j++) {
       Double_t ntru= 0.0, wtru= 0.0;
       for (Int_t i= 0; i<_nm+2; i++) {
-	ntru +=      _res->GetBinContent (i, j+first);
+               ntru +=      _res->GetBinContent (i, j+first);
         if (s) wtru += pow (_res->GetBinError   (i, j+first), 2);
       }
       Int_t bin= GetBin (_tru, j, _overflow);
-      _tru->SetBinContent (bin,      ntru);
+             _tru->SetBinContent (bin,      ntru);
       if (s) _tru->SetBinError   (bin, sqrt(wtru));
     }
   }
