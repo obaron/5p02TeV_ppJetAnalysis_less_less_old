@@ -380,11 +380,11 @@ int bayesUnfoldMCSpectra(  std::string inFile_MC_dir , std::string baseName ,
   
   
   // thy spectra  
-  TH1D* CT10nlo  =(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R04_CT10nlo  ).c_str());
-  TH1D* CT14nlo  =(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R04_CT14nlo  ).c_str());
-  TH1D* HERAPDF  =(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R04_HERAPDF  ).c_str());
-  TH1D* MMHTnlo  =(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R04_MMHTnlo  ).c_str());
-  TH1D* NNPDFnnlo=(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R04_NNPDFnnlo).c_str());
+  TH1D* CT10nlo  =(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R03_CT10nlo  ).c_str());
+  TH1D* CT14nlo  =(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R03_CT14nlo  ).c_str());
+  TH1D* HERAPDF  =(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R03_HERAPDF  ).c_str());
+  TH1D* MMHTnlo  =(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R03_MMHTnlo  ).c_str());
+  TH1D* NNPDFnnlo=(TH1D*)makeThyHist_00eta20_v2((fNLOFile_R03_NNPDFnnlo).c_str());
 
   CT10nlo->SetMarkerSize(0);
   CT10nlo->SetLineColor(kBlack);  
@@ -1145,12 +1145,12 @@ int bayesUnfoldMCSpectra(  std::string inFile_MC_dir , std::string baseName ,
     //CT10nlo->SetLineColor(kRed);
     setupSpectraHist(CT10nlo  ,useSimpBins);
     legendThy1->AddEntry(CT10nlo  ,"CT10 NLO","l");
-    if(debugWrite){fout->cd(); CT10nlo->Write("CT10_NLO_R04_jtpt");}
+    if(debugWrite){fout->cd(); CT10nlo->Write("CT10_NLO_R03_jtpt");}
     
     //CT14nlo->SetLineColor(kGreen);
     setupSpectraHist(CT14nlo  ,useSimpBins);
     legendThy1->AddEntry(CT14nlo  ,"CT14 NLO","l");
-    if(debugWrite){fout->cd(); CT14nlo->Write("CT14_NLO_R04_jtpt");}
+    if(debugWrite){fout->cd(); CT14nlo->Write("CT14_NLO_R03_jtpt");}
     
     if(debugWrite)fout->cd();//makeThyHist will make me cd to last thy file opened...
     
@@ -1183,17 +1183,17 @@ int bayesUnfoldMCSpectra(  std::string inFile_MC_dir , std::string baseName ,
     //HERAPDF->SetLineColor(kBlue);
     setupSpectraHist(HERAPDF  ,useSimpBins);
     legendThy->AddEntry(HERAPDF  ,"HERAPDF 2015 NLO","l");
-    if(debugWrite){fout->cd(); HERAPDF->Write("HERAPDF105_NLO_R04_jtpt");}
+    if(debugWrite){fout->cd(); HERAPDF->Write("HERAPDF105_NLO_R03_jtpt");}
     
     //MMHTnlo->SetLineColor(kMagenta);
     setupSpectraHist(MMHTnlo  ,useSimpBins);
     legendThy->AddEntry(MMHTnlo  ,"MMHT 2014 NLO   ","l");
-    if(debugWrite){fout->cd(); MMHTnlo->Write("MMHT2014_NLO_R04_jtpt"); }
+    if(debugWrite){fout->cd(); MMHTnlo->Write("MMHT2014_NLO_R03_jtpt"); }
     
     //NNPDFnnlo->SetLineColor(kBlack);
     setupSpectraHist(NNPDFnnlo,useSimpBins);
     legendThy->AddEntry(NNPDFnnlo,"NNPDF NNLO","l");
-    if(debugWrite){fout->cd(); NNPDFnnlo->Write("NNPDF_NLO_R04_jtpt");    }
+    if(debugWrite){fout->cd(); NNPDFnnlo->Write("NNPDF_NLO_R03_jtpt");    }
     
     if(debugWrite)fout->cd();//makeThyHist will make me cd to last thy file opened...
     
@@ -1466,11 +1466,11 @@ int bayesUnfoldMCSpectra(  std::string inFile_MC_dir , std::string baseName ,
     hmat_percenterrs->SetTitle("SS MC Response Matrix Percent Errors");hmat_percenterrs->Write("SS_MC_mat_rebin_percerrors");  }
   
   // input thy ----------------  
-  CT10nlo  ->SetTitle("CT10 NLO Spectra");         CT10nlo  ->Write("NLO_CT10_NLO_R04_jtpt");	      
-  CT14nlo  ->SetTitle("CT14 NLO Spectra");	   CT14nlo  ->Write("NLO_CT14_NLO_R04_jtpt");	      
-  HERAPDF  ->SetTitle("HERAPDF NLO Spectra");	   HERAPDF  ->Write("NLO_HERAPDF105_NLO_R04_jtpt");  
-  MMHTnlo  ->SetTitle("MMHT NLO Spectra");	   MMHTnlo  ->Write("NLO_MMHT2014_NLO_R04_jtpt");    
-  NNPDFnnlo->SetTitle("NNPDF NNLO Spectra");	   NNPDFnnlo->Write("NLO_NNPDF_NLO_R04_jtpt");       
+  CT10nlo  ->SetTitle("CT10 NLO Spectra");         CT10nlo  ->Write("NLO_CT10_NLO_R03_jtpt");	      
+  CT14nlo  ->SetTitle("CT14 NLO Spectra");	   CT14nlo  ->Write("NLO_CT14_NLO_R03_jtpt");	      
+  HERAPDF  ->SetTitle("HERAPDF NLO Spectra");	   HERAPDF  ->Write("NLO_HERAPDF105_NLO_R03_jtpt");  
+  MMHTnlo  ->SetTitle("MMHT NLO Spectra");	   MMHTnlo  ->Write("NLO_MMHT2014_NLO_R03_jtpt");    
+  NNPDFnnlo->SetTitle("NNPDF NNLO Spectra");	   NNPDFnnlo->Write("NLO_NNPDF_NLO_R03_jtpt");       
   
   // output hists -------------
   hunf->SetTitle("OS MC Unf."); hunf->Write("OS_MC_unf");    
