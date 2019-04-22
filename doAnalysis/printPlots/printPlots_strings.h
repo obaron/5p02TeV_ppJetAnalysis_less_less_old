@@ -7,7 +7,7 @@ const std::string CMSSW_BASE=
   "  /home/obaron/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/";
 // "/net/hisrv0001/home/ilaflott/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/";
 const std::string SCRATCH_BASE=
-  "/home/obaron/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/readForests/outputCondor/";
+  "/cms/heavyion/obaron/5p02TeV_ppJetAnalysis/";
 //  "/export/d00/scratch/ilaflott/5p02TeV_ppJetAnalysis/";
 const std::string HOME_BASE=
   "/home/obaron/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/doAnalysis/printPlots/";

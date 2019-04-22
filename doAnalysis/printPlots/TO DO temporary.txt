@@ -1,0 +1,6 @@
+/cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04.18.19_outputCondor/ppData_HighPtJetTrig_ak3PFJets_04-18-19_0eta2/HighPtJetTrig_ak3PFJets-allFiles.root
+/cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04.18.19_outputCondor/ppData_HighPtJetTrig_ak3PFJets_04-18-19_0eta2/HighPtJetTrig_ak3PF-allFiles.root
+
+FIX THIS!!!
+IS the issue in the run_printplots.sh or in the readforests output? It's in the run_printplots input. Let's check the MC, though.
+OK, let's take the _Jets_ OUT of the files.

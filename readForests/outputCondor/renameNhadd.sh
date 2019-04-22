@@ -71,7 +71,7 @@ type=$5
 #theSCRATCHdir=${SCRATCH}/5p02TeV_ppJetAnalysis/readForests/${date_scratch}_outputCondor/
 #theSCRATCHdir=/cms/heavyion/ilaflott/T2_US_MIT_SCRATCH/5p02TeV_ppJetAnalysis/readForests/${date_scratch}_outputCondor/
 #theSCRATCHdir=/cms/heavyion/ilaflott/T2_US_MIT_SCRATCH/5p02TeV_ppJetAnalysis/readForests/${date_scratch}_outputCondor/ppData_CaloHLT
-theSCRATCHdir=/cms/heavyion/ilaflott/T2_US_MIT_SCRATCH/5p02TeV_ppJetAnalysis/readForests/${date_scratch}_outputCondor
+theSCRATCHdir=/cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/${date_scratch}_outputCondor
 workingDir=$PWD
 
 
@@ -97,10 +97,10 @@ then
     echo ""
     sleep 1s
     
-    ppMCjetPlotsDir=ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_${desc}/
-    #ppMCjetPlotsDir=ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_jetMult_${etabin}/
-    #ppMCjetPlotsDir=ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_jetPlots_${etabin}/
-    #ppMCjetPlotsDir=ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_JERS_${etabin}
+    #ppMCjetPlotsDir=ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_JERS_${desc}/
+    #ppMCjetPlotsDir=ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_jetMult_${desc}/
+    ppMCjetPlotsDir=ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_jetPlots_${desc}/
+    #ppMCjetPlotsDir=ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_JERS_${desc}/
     sleep 1s
     
     if [[ -d "${ppMCjetPlotsDir}" ]]
@@ -160,7 +160,7 @@ then
     #ppDatajet80=ppData_HighPtJet80_ak${R}PFJets_${date_output}_jetMult_${etabin}/
     #ppDatalowJets=ppData_HighPtLowerJets_ak${R}PFJets_${date_output}_jetMult_${etabin}/
 
-    ppDatajet80=ppData_HighPtJet80_ak${R}PFJets_${date_output}_${desc}/
+    ppDatajet80=ppData_HighPtJet80_ak${R}PFJets_${date_output}_jetPlots_${desc}/
     if [[ -d "${ppDatajet80}" ]]
     then
 	echo "${ppDatajet80} dir found."
@@ -169,7 +169,7 @@ then
 	echo "exit."
 	return
     fi
-    ppDatalowJets=ppData_HighPtLowerJets_ak${R}PFJets_${date_output}_${desc}/
+    ppDatalowJets=ppData_HighPtLowerJets_ak${R}PFJets_${date_output}_jetPlots_${desc}/
     if [[ -d "${ppDatalowJets}" ]]
     then
 	echo "${ppDatalowJets} dir found."

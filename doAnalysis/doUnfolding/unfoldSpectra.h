@@ -89,7 +89,9 @@
 const std::string CMSSW_BASE=
   "/home/obaron/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/readForests/outputCondor/";
 const std::string SCRATCH_BASE=
-  "/home/obaron/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/readForests/";
+  "/cms/heavyion/obaron/5p02TeV_ppJetAnalysis/";
+//  "/home/obaron/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/readForests/";
+
 const std::string unfoldDataSpectra_outdir="output/unfoldDataSpectra/";
 const std::string unfoldMCSpectra_outdir="output/unfoldMCSpectra/";
 

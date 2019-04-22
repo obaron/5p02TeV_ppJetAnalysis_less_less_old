@@ -1,0 +1,11 @@
+REAL FILES:
+MC:   /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets_03-05-19_JERS_0eta2/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets-allFiles.root
+ALSO: 	  
+
+DATA: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04.04.19_outputCondor/ppData_HighPtJetTrig_ak3PFJets_04-04-19_0eta2/HighPtJetTrig_ak3PFJets-allFiles.root
+
+NEW MC: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets_02-21-19_jetPlots_0eta2_1/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets-allFiles.root
+
+
+ALSO REAL: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets_02-21-19_jetPlots_0eta2_1/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets-allfiles.root
+TARGET:    /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets_02-21-19_JERS_0eta2_1/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets-allFiles.root
