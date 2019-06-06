@@ -61,8 +61,8 @@ int bayesUnfoldDataSpectra( std::string inFile_Data_dir , std::string inFile_MC_
   
   
   // INFILE NAME(S) -----------
-  const std::string inFile_MC_name="/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_"+fullJetType+"Jets-allFiles.root";
-  const std::string inFile_Data_name="/HighPtJetTrig_"+fullJetType+"Jets-allFiles.root";
+  const std::string inFile_MC_name="/Py8_CUETP8M1_QCDjetAllPtBins_"+fullJetType+"-allFiles.root";
+  const std::string inFile_Data_name="/HighPtJetTrig_"+fullJetType+"-allFiles.root";
   
   
   // OUTPUT FILE, NAME(S) -----------

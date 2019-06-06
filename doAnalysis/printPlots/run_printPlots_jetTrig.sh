@@ -9,7 +9,8 @@ outtag=$5
 echo ""
 echo "Running w/ Jet80+LowerJets PDs..."
 echo ""
-./printPlots_jetTrig.exe ${condorDir}/ppData_HighPtJetTrig_ak${R}PFJets_${dateDataIn}_jetPlots_${etabin}/ HPtJetTrig_${outtag}
+./printPlots_jetTrig.exe ${condorDir}/ppData_HighPtJetTrig_ak${R}PFJets_${dateDataIn}_${etabin}/ HPtJetTrig_${outtag}
+#./printPlots_jetTrig.exe ${condorDir}/ppData_HighPtJetTrig_ak${R}PFJets_${dateDataIn}_jetPlots_${etabin}/ HPtJetTrig_${outtag}
 
 
 return

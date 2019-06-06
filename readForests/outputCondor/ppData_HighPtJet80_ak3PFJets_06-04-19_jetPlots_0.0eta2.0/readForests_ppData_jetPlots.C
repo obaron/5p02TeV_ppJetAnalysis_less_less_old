@@ -645,9 +645,9 @@ int readForests_ppData_jetPlots( std::string inFilelist , int startfile , int en
   
   L2ResidualJES* L2JES =NULL;//= new L2ResidualJES(radius, etacutForResid, "pp5");
   L3ResidualJES* L3JES =NULL;//= new L3ResidualJES("pp5");
-  bool doResidualCorr=false; //I think this is what I'm supposed to chance, per Ian's advice, to the line beneath
-  //bool doResidualCorr=&&false; //This line broke things. It doesn't like the ampersand.
-  if((radius==3 || radius==4)&&false){
+  //bool doResidualCorr=false; I think this is what I'm supposed to chance, per Ian's advice, to the line beneath
+  bool doResidualCorr=&&false; 
+  if(radius==3 || radius==4){
     std::cout<<std::endl;
     std::cout<<"***!!!Residual jet energy corrections will be applied to RECO Jet p_T!!!***"<<std::endl;
     std::cout<<std::endl;
@@ -990,11 +990,11 @@ int readForests_ppData_jetPlots( std::string inFilelist , int startfile , int en
       if(fillDataJetIDHists) 	{
 	if (!(absreceta > 2.4)) 
 	  passesJetID=(bool)jetID_00eta24( jetIDpt, 
-					   neSum_F[jet],  phSum_F[jet],  chSum_F[jet],  eSum_F[jet], muSum_F[jet],
+					   neSum_F[jet],  phSum_F[jet],  chSum_F[jet],  eSum_F[jet],
 					   numConst,  chMult);
 	else if ( !(absreceta>2.7) && absreceta>2.4 ) 
 	  passesJetID=(bool) jetID_24eta27( jetIDpt,
-					    neSum_F[jet],  phSum_F[jet], muSum_F[jet],
+					    neSum_F[jet],  phSum_F[jet], 
 					    numConst);
 	else if( !(absreceta>3.0) && absreceta>2.7 )
 	  passesJetID=(bool) jetID_27eta30( jetIDpt,

@@ -339,7 +339,7 @@ bool jetID_00eta24(float jetIDpt,
 }
 
 bool jetID_24eta27(float jetIDpt,
-		   float neSum, float phSum, float muSum,
+		   float neSum, float phSum, 
 		   int numConst){
   bool funcDebug=jetIDDebug;
   if(funcDebug)
@@ -347,8 +347,7 @@ bool jetID_24eta27(float jetIDpt,
   bool passesJetID=false;
   if( neSum/jetIDpt    < 0.99 &&
       phSum/jetIDpt    < 0.99 &&
-      numConst         > 1    &&
-	  muSum/jetIDpt < 0.80 ) passesJetID=true; 	  
+      numConst         > 1       ) passesJetID=true;	      
   if(funcDebug)
     std::cout<<" passesJetID="<<passesJetID<<std::endl;
   return passesJetID;

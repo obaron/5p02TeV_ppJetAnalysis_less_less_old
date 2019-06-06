@@ -1,6 +1,62 @@
-/cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04.18.19_outputCondor/ppData_HighPtJetTrig_ak3PFJets_04-18-19_0eta2/HighPtJetTrig_ak3PFJets-allFiles.root
-/cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04.18.19_outputCondor/ppData_HighPtJetTrig_ak3PFJets_04-18-19_0eta2/HighPtJetTrig_ak3PF-allFiles.root
+targ: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04.18.19_outputCondor/ppData_HighPtJetTrig_ak3PFJets_04-18-19_0eta2/HighPtJetTrig_ak3PFJets-allFiles.root
+real: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04.18.19_outputCondor/ppData_HighPtJetTrig_ak3PFJets_04-18-19_0eta2/HighPtJetTrig_ak3PF-allFiles.root
 
 FIX THIS!!!
 IS the issue in the run_printplots.sh or in the readforests output? It's in the run_printplots input. Let's check the MC, though.
-OK, let's take the _Jets_ OUT of the files.
+OK, let's take the _Jets_ OUT of the files. HOW DO WE DO THIS? And is the default just leaving it in?? I need to check. **Where are these made in readForests???**
+
+default in Ian's code is:
+./printPlots_jetPlots.exe   ${dataCondorDir}/ppData_HighPtJetTrig_ak${R}PFJets_${dateDataIn}_jetPlots_${dataEtaBin}/ ${MCCondorDir}/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${dateMCIn}_jetPlots_${MCEtaBin}/   HPtJetTrig_semiOffPy8_${outtag}
+
+This has both _jetPlots_ and PFJets. Next time I have to update everything, I'll change it to this. For now, I will NOT change the readforests output. I will change the jets filename!
+I guess. I need to make sure the other scritps aren't looking for this, too.
+What a colossal pain in the ass this whole journey has been.
+THE QUESTION IS: if I change this for unfolding, will it be messed up for the other scripts? Let's check the input I GUESS. Yup it sure would be.
+I found where this is looked for in the bayesUnfoldData and changed it to work on the current files (sans "jets_").
+NOTE: it is obviously the renamenhadd that names these files, not the readforests!!
+
+Do I need to rename eta to 2.0 2.0 instead of 0.0 2.0? I think so. (Maybe not, it's 0 to 2 in Ian's code.)
+
+--
+Standardization
+
+Let's look at desired inputs.
+Unfolding codes:
+
+1)
+run_bayesUnfoldDataSpectra.sh
+source run_bayesUnfoldDataSpectra.sh [R=3,4] [dataCondorDir] [data_date] [dataetaBin] [MCCondorDir] [MC_date] [MCetaBin] [etaBinOut] [useSimpleBinning] [BayeskIter]"
+eg  source run_bayesUnfoldDataSpectra.sh 3 outputCondor/04.18.19_outputCondor 04-18-19 0eta2 outputCondor/04-22-19_outputCondor 04-22-19 0.0eta2.0 00eta20_testing_05.02 0 5
+looking for bayesUnfoldDataSpectra.C
+	bayesUnfoldDataSpectra.C:
+	
+	MC file:   /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04-22-19_outputCondor/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets_04-22-19_JERS_0.0eta2.0/Py8_CUETP8M1_QCDjetAllPtBins_ak3PF-allFiles.root
+	DATA file: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04.18.19_outputCondor/ppData_HighPtJetTrig_ak3PFJets_04-18-19_0eta2/HighPtJetTrig_ak3PF-allFiles.root
+	
+	
+run_bayesUnfoldMCSpectra.sh
+
+	MC file: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/04-22-19_outputCondor/ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak3PFJets_04-22-19_JERS_0.0eta2.0/Py8_CUETP8M1_QCDjetAllPtBins_ak3PF-allFiles.root
+	IDENTICAL TO DATA UNFOLDING INPUT
+	
+now let's look at rename'n'hadd.
+YOU WILL NEED TO CHANGE SCRIPT VARIABLES between JERS and printplots.
+
+Data rename'n'hadd:
+
+	BASE: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/${date_scratch}_outputCondor
+	DIR:  /ppData_HighPtJetTrig_ak${R}PFJets_${date_output}_${desc}
+	FILE: HighPtJetTrig_ak${R}PF-allFiles.root
+
+This looks consistent with the data file as currently accepted by input.
+
+MC JERS rename'n'hadd:	
+	
+	BASE: /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/${date_scratch}_outputCondor
+	DIR:  /ppMC_Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PFJets_${date_output}_JERS_${desc}/
+	FILE: Py8_CUETP8M1_QCDjetAllPtBins_ak${R}PF-allFiles.root
+
+This also looks consistent, but I bet running will give errors.
+
+2)
+printPlots.sh
