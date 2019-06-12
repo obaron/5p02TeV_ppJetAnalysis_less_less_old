@@ -144,7 +144,7 @@ then
     #ppDataHPtDir=ppData_HighPtJetTrig_ak${R}PFJets_${date_output}_jetPlots_${etabin}/    
     #ppDataHPtDir=ppData_HighPtJetTrig_ak${R}PFJets_${date_output}_jetMult_${etabin}/    
     ppDataHPtDir=ppData_HighPtJetTrig_ak${R}PFJets_${date_output}_${desc}
-    mkdir ${ppDataHPtDir}
+	mkdir ${ppDataHPtDir}
     sleep 1s
 
     echo ""
@@ -159,7 +159,10 @@ then
     #ppDatajet80=ppData_HighPtJet80_ak${R}PFJets_${date_output}_jetMult_${etabin}/
     #ppDatalowJets=ppData_HighPtLowerJets_ak${R}PFJets_${date_output}_jetMult_${etabin}/
 
+    #ppDatajet80=ppData_HighPtJet80_ak${R}PFJets_${date_output}_${desc}/
     ppDatajet80=ppData_HighPtJet80_ak${R}PFJets_${date_output}_jetPlots_${desc}/
+	#note from 06.06.19, I've just added jetPlots into the line above to match the readfiles output. IF THIS IS NOT GOOD, TAKE IT OUT AND CHANGE READFILES. IT'S NOT GOOD
+	
     if [[ -d "${ppDatajet80}" ]]
     then
 	echo "${ppDatajet80} dir found."

@@ -58,5 +58,18 @@ MC JERS rename'n'hadd:
 
 This also looks consistent, but I bet running will give errors.
 
-2)
-printPlots.sh
+output of MC is in /cms/heavyion/obaron/5p02TeV_ppJetAnalysis/outputCondor/06.05.19_outputCondor
+now let's do data so we can actually run on this.
+
+note from 06.06.19, I've just added jetPlots into the line in data rename'n'hadd to match the readfiles output. IF THIS IS NOT GOOD, TAKE IT OUT AND CHANGE READFILES.
+OK. Everything for unfolding should work up to this point. Now let's try running the unfolding code and pray to God it just works.
+NARRATOR: It did not work.
+
+OK, bad news. renamenhadd deletes the data files when it runs. Let's run them again and make a backup, I guess.
+Final stance on "jetplots" in the filenames: It is simply not there in Ian's code. I am taking it out of mine. Let's hope this works.
+OK, looks like jetplots has been removed from hadded filenames.
+IT WORKS!!!
+
+Now let's do jetplots. The tricky part will be getting the files to look different from one another. I will probably need to ass something in the filename.
+This will most likely mean more filename fuckery :(
+well, let's do a git commit and then fool around.
